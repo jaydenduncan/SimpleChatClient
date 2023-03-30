@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SimpleChatClient</string>
+
+    <string name="post">POST</string>
+    <string name="clear">CLEAR</string>
+
 </resources>
