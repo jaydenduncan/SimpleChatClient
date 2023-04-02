@@ -12,8 +12,8 @@ public class DefaultController extends AbstractController {
         invokeModelMethod("sendGetRequest", null);
     }
 
-    public void sendPostRequest() {
-        invokeModelMethod("sendPostRequest", null);
+    public void sendPostRequest(String message) {
+        invokeModelMethod("sendPostRequest", message);
     }
 
 }

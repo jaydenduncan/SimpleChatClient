@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         binding.postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.sendPostRequest();
+                String message = binding.editTextMessage.getText().toString();
+
+                controller.sendPostRequest(message);
             }
         });
 

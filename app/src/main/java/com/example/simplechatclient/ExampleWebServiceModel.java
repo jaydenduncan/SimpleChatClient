@@ -21,12 +21,14 @@ public class ExampleWebServiceModel extends AbstractModel {
 
     private static final String TAG = "ExampleWebServiceModel";
 
-    private static final String GET_URL = "https://jsonplaceholder.typicode.com/todos/1";
-    private static final String POST_URL = "https://jsonplaceholder.typicode.com/posts";
+    private static final String GET_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
+    private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
+    private static final String USERNAME = "USER";
 
     private MutableLiveData<JSONObject> jsonData;
 
     private String outputText;
+    private String newMessage;
 
     private final ExecutorService requestThreadExecutor;
     private final Runnable httpGetRequestThread, httpPostRequestThread;
@@ -80,7 +82,8 @@ public class ExampleWebServiceModel extends AbstractModel {
 
     public void initDefault() {
 
-        setOutputText("Click the button to send an HTTP GET request ...");
+        newMessage = null;
+        sendGetRequest();
 
     }
 
@@ -107,7 +110,9 @@ public class ExampleWebServiceModel extends AbstractModel {
 
     // Start POST Request (called from Controller)
 
-    public void sendPostRequest() {
+    public void sendPostRequest(String message) {
+        newMessage = message;
+
         httpPostRequestThread.run();
     }
 
@@ -118,7 +123,13 @@ public class ExampleWebServiceModel extends AbstractModel {
 
         this.getJsonData().postValue(json);
 
-        setOutputText(json.toString());
+        try{
+            setOutputText(json.get("messages").toString());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -186,12 +197,22 @@ public class ExampleWebServiceModel extends AbstractModel {
 
                     // Create request parameters (these will be echoed back by the example API)
 
-                    String p = "name=Jack+Flack&userid=2001";
+
+                    StringBuilder p = new StringBuilder();
+
+                    p.append("name").append("=").append(USERNAME);
+                    p.append("&");
+                    p.append("message").append("=").append(newMessage);
+
+                    Log.i(TAG, "Query: " + p.toString()); //test
+
+                    // Reset newMessage value
+                    newMessage = null;
 
                     // Write parameters to request body
 
                     OutputStream out = conn.getOutputStream();
-                    out.write(p.getBytes());
+                    out.write(p.toString().getBytes());
                     out.flush();
                     out.close();
 
@@ -214,10 +235,12 @@ public class ExampleWebServiceModel extends AbstractModel {
 
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
+
                     /* Read Response Into StringBuilder */
 
                     do {
                         line = reader.readLine();
+                        Log.i(TAG, "Line: " + line);
                         if (line != null)
                             r.append(line);
                     }
@@ -233,6 +256,7 @@ public class ExampleWebServiceModel extends AbstractModel {
                 /* Parse Response as JSON */
 
                 results = new JSONObject(r.toString());
+
 
             }
             catch (Exception e) {
