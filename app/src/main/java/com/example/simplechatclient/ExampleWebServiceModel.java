@@ -1,7 +1,9 @@
 package com.example.simplechatclient;
 
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 
 import org.json.JSONObject;
@@ -159,13 +161,13 @@ public class ExampleWebServiceModel extends AbstractModel {
         }
 
         /* Create and Send Request */
-
         private JSONObject doRequest(String urlString) {
 
             StringBuilder r = new StringBuilder();
             String line;
 
             HttpURLConnection conn = null;
+            JSONObject output = null;
             JSONObject results = null;
 
             /* Log Request Data */
@@ -200,11 +202,11 @@ public class ExampleWebServiceModel extends AbstractModel {
 
                     StringBuilder p = new StringBuilder();
 
-                    p.append("name").append("=").append(USERNAME);
-                    p.append("&");
-                    p.append("message").append("=").append(newMessage);
+                    output = new JSONObject();
 
-                    Log.i(TAG, "Query: " + p.toString()); //test
+                    output.append("name", USERNAME);
+                    output.append("message", newMessage);
+
 
                     // Reset newMessage value
                     newMessage = null;
@@ -212,7 +214,7 @@ public class ExampleWebServiceModel extends AbstractModel {
                     // Write parameters to request body
 
                     OutputStream out = conn.getOutputStream();
-                    out.write(p.toString().getBytes());
+                    out.write(output.toString().getBytes());
                     out.flush();
                     out.close();
 
