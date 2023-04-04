@@ -33,7 +33,7 @@ public class ExampleWebServiceModel extends AbstractModel {
     private String newMessage;
 
     private final ExecutorService requestThreadExecutor;
-    private final Runnable httpGetRequestThread, httpPostRequestThread;
+    private final Runnable httpGetRequestThread, httpPostRequestThread, httpDeleteRequestThread;
     private Future<?> pending;
 
     public ExampleWebServiceModel() {
@@ -80,6 +80,28 @@ public class ExampleWebServiceModel extends AbstractModel {
 
         };
 
+        httpDeleteRequestThread = new Runnable() {
+
+            @Override
+            public void run() {
+
+                /* If a previous request is still pending, cancel it */
+
+                if (pending != null) { pending.cancel(true); }
+
+                /* Begin new request now, but don't wait for it */
+
+                try {
+                    pending = requestThreadExecutor.submit(new HTTPRequestTask("DELETE", POST_URL));
+                }
+                catch (Exception e) { Log.e(TAG, " Exception: ", e); }
+
+            }
+
+        };
+
+
+
     }
 
     public void initDefault() {
@@ -118,6 +140,11 @@ public class ExampleWebServiceModel extends AbstractModel {
         httpPostRequestThread.run();
     }
 
+    // Start DELETE Request (called from Controller)
+    public void sendDeleteRequest() {
+        httpDeleteRequestThread.run();
+    }
+
 
     // Setter / Getter Methods for JSON LiveData
 
@@ -126,7 +153,14 @@ public class ExampleWebServiceModel extends AbstractModel {
         this.getJsonData().postValue(json);
 
         try{
-            setOutputText(json.get("messages").toString());
+            String messages = json.getString("messages").toString();
+
+            if(messages.equals("")){
+                setOutputText("Nothing to show here. Post some data above to begin chatting...");
+            }
+            else{
+                setOutputText(messages);
+            }
         }
         catch(Exception e){
             e.printStackTrace();

@@ -44,8 +44,16 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             @Override
             public void onClick(View view) {
                 String message = binding.editTextMessage.getText().toString();
+                binding.editTextMessage.setText("");
 
                 controller.sendPostRequest(message);
+            }
+        });
+
+        binding.clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controller.sendDeleteRequest();
             }
         });
 

@@ -16,4 +16,8 @@ public class DefaultController extends AbstractController {
         invokeModelMethod("sendPostRequest", message);
     }
 
+    public void sendDeleteRequest() {
+        invokeModelMethod("sendDeleteRequest", null);
+    }
+
 }
