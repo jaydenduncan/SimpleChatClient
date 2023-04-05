@@ -156,7 +156,7 @@ public class ExampleWebServiceModel extends AbstractModel {
             String messages = json.getString("messages").toString();
 
             if(messages.equals("")){
-                setOutputText("Nothing to show here. Post some data above to begin chatting...");
+                setOutputText("Nothing to show here. Post a message above to begin chatting...");
             }
             else{
                 setOutputText(messages);
@@ -233,13 +233,12 @@ public class ExampleWebServiceModel extends AbstractModel {
 
                     // Create request parameters (these will be echoed back by the example API)
 
-
                     StringBuilder p = new StringBuilder();
 
                     output = new JSONObject();
 
-                    output.append("name", USERNAME);
-                    output.append("message", newMessage);
+                    output.put("name", USERNAME);
+                    output.put("message", newMessage);
 
 
                     // Reset newMessage value

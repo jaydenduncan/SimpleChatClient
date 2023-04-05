@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
 
         model.initDefault();
 
+        // Set click events for the 'POST' and 'CLEAR' buttons
+
         binding.postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
